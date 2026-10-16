@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import { useReducedMotion } from 'motion/react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Chrome, Github } from 'lucide-react'
 import { projects } from '../content'
-import { ProjectArt } from './TechnicalArt'
+import { ProjectScene } from './ProjectScene'
+import { useReducedMotionPreference } from '../hooks/useReducedMotionPreference'
 
 export function ProjectCarousel() {
   const [ref, api] = useEmblaCarousel({ align: 'center', containScroll: 'trimSnaps', loop: false })
-  const reduced = useReducedMotion()
+  const reduced = useReducedMotionPreference()
   const [selected, setSelected] = useState(0)
   const [canPrev, setCanPrev] = useState(false)
   const [canNext, setCanNext] = useState(true)
@@ -46,7 +46,7 @@ export function ProjectCarousel() {
     }}>
       <div className="carousel-track">
         {projects.map((project, index) => <div key={project.id} className={`project-slide ${selected === index ? 'is-selected' : ''}`} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${projects.length}: ${project.title}`}>
-          <div className="project-image"><ProjectArt variant={project.visual}/><span className="project-number">/{project.id}</span></div>
+          <ProjectScene project={project} selected={selected === index}/>
           <div className="project-detail"><div className="project-category"><span>{project.category}</span></div>
             <h2>{project.title}</h2><p>{project.description}</p>
             <div className="project-bottom"><div className="project-tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>

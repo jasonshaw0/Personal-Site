@@ -8,6 +8,7 @@ import './styles.css'
 import './layout.css'
 import './navigation.css'
 import './projects.css'
+import './project-scenes.css'
 import './sculpture.css'
 import './transitions.css'
 
