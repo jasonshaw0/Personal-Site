@@ -1,22 +1,10 @@
-# VS Code History
-.history/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDE files
-.vscode/
-*.code-workspace
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.temp
+node_modules/
+dist/
+.wrangler/
+.env
+.env.*
+!.env.example
+artifacts/
+.playwriter*
+*.local
+old-website/
