@@ -10,7 +10,7 @@
     "types": "wrangler types --include-runtime false && wrangler types --config wrangler.contact.jsonc --env-interface ContactEnv --include-runtime false contact-configuration.d.ts",
     "build": "npm run check && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "wrangler deploy",
     "deploy:contact": "wrangler deploy --config wrangler.contact.jsonc"
   },
   "dependencies": {
