@@ -11,6 +11,7 @@ import './projects.css'
 import './project-scenes.css'
 import './sculpture.css'
 import './transitions.css'
+import './mobile-navigation.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode><App /></React.StrictMode>,

@@ -12,6 +12,7 @@ import { NavigationIntro, navigationTipKey, needsNavigationTip } from './compone
 import { usePageGestures } from './hooks/usePageGestures'
 import { useReducedMotionPreference } from './hooks/useReducedMotionPreference'
 import { PageThread } from './components/PageThread'
+import { MobileNavigation } from './components/MobileNavigation'
 
 const pages = [
   { id: 'profile', name: 'Profile' },
@@ -77,6 +78,7 @@ export function App() {
   const mainRef = useRef<HTMLElement>(null)
   const shouldFocus = useRef(false)
   const [introOpen, setIntroOpen] = useState(needsNavigationTip)
+  const [menuOpen, setMenuOpen] = useState(false)
   const reduced = useReducedMotionPreference()
   const current = pages.findIndex(page => page.id === active)
   const previous = pages[current - 1]
@@ -88,6 +90,7 @@ export function App() {
   }, [])
 
   const navigate = useCallback((id: PageId, updateHistory = true) => {
+    setMenuOpen(false)
     if (id === activeRef.current) return
     if (mainRef.current?.contains(document.activeElement)) mainRef.current.focus({preventScroll: true})
     activeRef.current = id
@@ -102,7 +105,7 @@ export function App() {
     if (destination) navigate(destination.id)
   }, [navigate])
 
-  usePageGestures(mainRef, stepPage, active, introOpen)
+  usePageGestures(mainRef, stepPage, active, introOpen || menuOpen)
 
   useEffect(() => {
     const sync = () => navigate(pageFromUrl(), false)
@@ -155,6 +158,7 @@ export function App() {
       <nav className="main-nav" aria-label="Main navigation">{pages.map(item => <button key={item.id} aria-current={active === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>{item.name}{active === item.id && <motion.span className="nav-active" layoutId="active-page" transition={{duration: reduced ? 0 : .4, ease}}/>}</button>)}</nav>
       <a className="header-github" href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={16}/><span>GitHub</span><ArrowUpRight size={13}/></a>
     </header>
+    <MobileNavigation pages={pages} active={active} open={menuOpen} onOpenChange={setMenuOpen} onNavigate={navigate} onHelp={() => setIntroOpen(true)}/>
 
     <main id="main" ref={mainRef} className="page-stage" tabIndex={-1} aria-label={pages[current].name}>
       {page('profile', 'hero', <>
