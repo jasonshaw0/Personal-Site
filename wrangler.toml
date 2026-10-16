@@ -1,5 +1,17 @@
-# wrangler.toml
-name = 'jasonshaw'
-compatibility_date = "2025-07-04"
-main = "src/index.ts"
-assets = { directory = "." }
+name = "jasonshaw"
+account_id = "ccb39edc40a8735f0143eaaf430190a3"
+compatibility_date = "2026-10-16"
+main = "worker/index.ts"
+routes = [
+  { pattern = "jason-shaw.com/*", zone_name = "jason-shaw.com" },
+  { pattern = "www.jason-shaw.com/*", zone_name = "jason-shaw.com" }
+]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[services]]
+binding = "CONTACT"
+service = "jasonshaw-contact"
