@@ -7,7 +7,7 @@ import { ProjectScene } from './ProjectScene'
 import { useReducedMotionPreference } from '../hooks/useReducedMotionPreference'
 
 export function ProjectCarousel() {
-  const [ref, api] = useEmblaCarousel({ align: 'center', containScroll: 'trimSnaps', loop: false })
+  const [ref, api] = useEmblaCarousel({ align: 'center', containScroll: 'trimSnaps', loop: false, duration: 20 })
   const reduced = useReducedMotionPreference()
   const [selected, setSelected] = useState(0)
   const [canPrev, setCanPrev] = useState(false)
@@ -28,6 +28,38 @@ export function ProjectCarousel() {
   }, [api, update])
 
   useEffect(() => {
+    const carousel = api?.rootNode().closest<HTMLElement>('[aria-roledescription="carousel"]')
+    if (!carousel || !api) return
+    const gesture = { lastAt: 0, lastStepAt: -Infinity, sum: 0, direction: 0 }
+
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey) return
+      // Keep wheel gestures inside the collection, including at either end.
+      event.preventDefault()
+      event.stopPropagation()
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+      if (!delta) return
+      const now = performance.now()
+      const direction = Math.sign(delta)
+      if (now - gesture.lastAt > 160 || direction !== gesture.direction) gesture.sum = 0
+      gesture.lastAt = now
+      gesture.direction = direction
+      // Discard input during the short lock so momentum cannot queue up jumps.
+      if (now - gesture.lastStepAt < 300) return
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? carousel.clientHeight : 1
+      gesture.sum += Math.abs(delta) * unit
+      if (gesture.sum < 36) return
+      gesture.sum = 0
+      gesture.lastStepAt = now
+      if (direction > 0) api.scrollNext(!!reduced)
+      else api.scrollPrev(!!reduced)
+    }
+
+    carousel.addEventListener('wheel', onWheel, { passive: false })
+    return () => carousel.removeEventListener('wheel', onWheel)
+  }, [api, reduced])
+
+  useEffect(() => {
     const image = api?.slideNodes()[selected]?.querySelector('.project-image')
     if (!image) return
     const observer = new ResizeObserver(entries => setImageMiddle(entries[0].contentRect.height / 2))
@@ -45,7 +77,8 @@ export function ProjectCarousel() {
       if (event.key === 'End') { event.preventDefault(); api?.scrollTo(projects.length - 1, !!reduced) }
     }}>
       <div className="carousel-track">
-        {projects.map((project, index) => <div key={project.id} className={`project-slide ${selected === index ? 'is-selected' : ''}`} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${projects.length}: ${project.title}`}>
+        {projects.map((project, index) => <div key={project.id} className={`project-slide ${selected === index ? 'is-selected' : ''}`} role="group" aria-roledescription="slide" aria-current={selected === index ? 'true' : undefined} aria-label={`${index + 1} of ${projects.length}: ${project.title}`}
+          onFocusCapture={() => { if (selected !== index) api?.scrollTo(index, !!reduced) }}>
           <ProjectScene project={project} selected={selected === index}/>
           <div className="project-detail"><div className="project-category"><span>{project.category}</span></div>
             <h2>{project.title}</h2><p>{project.description}</p>

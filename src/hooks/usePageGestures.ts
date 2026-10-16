@@ -21,6 +21,7 @@ export function usePageGestures(
     let touch: { x: number; y: number } | null = null
 
     function onWheel(event: WheelEvent) {
+      if (event.defaultPrevented || (event.target instanceof Element && event.target.closest('[aria-roledescription="carousel"]'))) return
       if (paused || event.ctrlKey || event.metaKey || event.shiftKey || editing(event.target) || editing(document.activeElement)) return
       if (Math.abs(event.deltaY) <= Math.abs(event.deltaX) || Math.abs(event.deltaY) < 2) return
       event.preventDefault()
