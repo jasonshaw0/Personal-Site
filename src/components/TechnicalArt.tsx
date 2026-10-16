@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { PointerEvent } from 'react'
+import type { CSSProperties, PointerEvent } from 'react'
 import { motion, useSpring } from 'motion/react'
 import type { MotionStyle } from 'motion/react'
 import type { Project } from '../content'
@@ -89,7 +89,14 @@ export function ProjectArt({ variant }: { variant: Project['visual'] }) {
     <span className="art-corner top-left"/><span className="art-corner bottom-right"/>
     {variant === 'cad' && <div className="cad-visual">
       <span className="visual-kicker">SOURCE → GEOMETRY → EVIDENCE</span>
-      <svg viewBox="0 0 480 240" fill="none"><g stroke="currentColor" strokeWidth="1.2"><path d="m130 85 126-65 116 65-126 68Z"/><path d="M130 85v75l116 66 126-66V85M246 153v73M155 98v48l91 51 101-51V98"/><ellipse cx="252" cy="84" rx="28" ry="15"/><path d="M224 84v28m56-28v28M214 39V7m72 31V7M214 13h72M100 84H71m29 75H71m8-75v75M389 85h31m-31 75h31m-8-75v75" opacity=".5"/></g><g fill="currentColor"><circle cx="155" cy="86" r="3"/><circle cx="256" cy="35" r="3"/><circle cx="345" cy="85" r="3"/><circle cx="246" cy="134" r="3"/></g></svg>
+      <svg className="cad-object" viewBox="0 0 480 260" fill="none">
+        <defs><linearGradient id="cad-top" x1="130" y1="35" x2="355" y2="145" gradientUnits="userSpaceOnUse"><stop stopColor="#a6c4bb" stopOpacity=".38"/><stop offset=".5" stopColor="#a6c4bb" stopOpacity=".08"/><stop offset="1" stopColor="#a6c4bb" stopOpacity=".23"/></linearGradient></defs>
+        <ellipse className="cad-shadow" cx="248" cy="231" rx="132" ry="13" fill="#090e10" opacity=".6"/>
+        <g className="cad-dimensions" stroke="currentColor" strokeWidth=".8" opacity=".4"><path d="M100 99H71m29 75H71m8-75v75M389 100h31m-31 75h31m-8-75v75M75 95l8 8m-8 67 8 8m325-82 8 8m-8 67 8 8"/><path d="m118 197 126 68 138-70M118 197v-14m264 12v-14" strokeDasharray="3 5"/></g>
+        <g className="cad-body" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"><path d="m130 100 116 68v73l-116-66Z" fill="#3e5754" fillOpacity=".45"/><path d="m246 168 126-68v75l-126 66Z" fill="#1c3030" fillOpacity=".9"/><path d="m130 100 126-65 116 65-126 68Z" fill="url(#cad-top)"/><path d="M155 113v48l91 51 101-51v-48" opacity=".45"/><ellipse cx="252" cy="99" rx="28" ry="15" fill="#142120"/><path d="M224 99v28m56-28v28" opacity=".45"/></g>
+        <g className="cad-lid" stroke="currentColor" strokeWidth="1"><path d="m130 76 126-65 116 65-126 68Z" fill="url(#cad-top)"/><ellipse cx="252" cy="75" rx="28" ry="15"/><path d="M130 76v9l116 68 126-68v-9M246 144v9" opacity=".65"/><g className="cad-pins" fill="#c0e3d2"><circle cx="155" cy="77" r="2.5"/><circle cx="256" cy="26" r="2.5"/><circle cx="345" cy="76" r="2.5"/><circle cx="246" cy="125" r="2.5"/></g></g>
+        <g className="cad-connectors" stroke="currentColor" strokeWidth=".7" strokeDasharray="2 4" opacity=".4"><path d="M130 85v15m116 53v15m126-83v15"/></g>
+      </svg>
       <div className="evidence-line"><span>✓ Solid geometry</span><span>✓ Dimensions</span><span>✓ Clearances</span></div>
     </div>}
     {variant === 'resources' && <div className="resource-visual">
@@ -98,14 +105,14 @@ export function ProjectArt({ variant }: { variant: Project['visual'] }) {
     </div>}
     {variant === 'crossplay' && <div className="crossplay-visual">
       <div className="word-board">{Array.from({length: 49}, (_, i) => {
-        const letter = i >= 21 && i <= 27 ? 'CROSSES'[i - 21] : i === 10 ? 'P' : i === 17 ? 'L' : i === 31 ? 'Y' : ''
-        return <span key={i} className={letter ? 'word-tile' : i % 8 === 0 ? 'premium-tile' : ''}>{letter}</span>
+        const letter = i >= 21 && i <= 27 ? 'CROSSES'[i - 21] : i === 10 ? 'R' : i === 17 ? 'O' : i === 31 ? 'E' : ''
+        return <span key={i} style={{ '--tile-delay': `${(i % 7) * 35}ms` } as CSSProperties} className={letter ? 'word-tile' : i % 8 === 0 ? 'premium-tile' : ''}>{letter}</span>
       })}</div>
       <div className="solver-caption"><span className="visual-kicker">CROSSPLAY SOLVER</span><strong>Every play.<br/>Every point.</strong><div><span>01 / Recognize</span><span>02 / Solve</span><span>03 / Inspect</span></div><small>LOCAL VISION + DETERMINISTIC SEARCH</small></div>
     </div>}
     {variant === 'dates' && <div className="dates-visual">
       <span className="visual-kicker">EXACT UPLOAD DATES FOR YOUTUBE</span>
-      <div className="date-comparison"><span className="relative-date">6 years ago</span><span className="date-arrow">↓</span><strong>Apr 22, 2020</strong></div>
+      <div className="date-comparison"><span className="relative-date">6 years ago</span><span className="date-arrow">↓</span><div className="date-display"><div className="date-display-header"><span>UPLOAD DATE</span><span>YYYY / MM / DD</span></div><strong>Apr 22, 2020</strong><div className="date-ruler">{Array.from({length: 25}, (_, index) => <i key={index} className={index === 17 ? 'date-tick-active' : ''}/>)}</div></div></div>
       <div className="date-features"><span>Browse normally.</span><span>Know exactly when.</span></div>
     </div>}
     <span className="art-label">PROJECT ILLUSTRATION</span>
