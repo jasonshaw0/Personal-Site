@@ -115,6 +115,53 @@ export function ProjectArt({ variant }: { variant: Project['visual'] }) {
       <div className="date-comparison"><span className="relative-date">6 years ago</span><span className="date-arrow">↓</span><div className="date-display"><div className="date-display-header"><span>UPLOAD DATE</span><span>YYYY / MM / DD</span></div><strong>Apr 22, 2020</strong><div className="date-ruler">{Array.from({length: 25}, (_, index) => <i key={index} className={index === 17 ? 'date-tick-active' : ''}/>)}</div></div></div>
       <div className="date-features"><span>Browse normally.</span><span>Know exactly when.</span></div>
     </div>}
+    {variant === 'atlas' && <div className="atlas-visual">
+      <svg className="atlas-globe" viewBox="0 0 300 280" fill="none">
+        <defs>
+          <radialGradient id="atlas-surface" cx=".35" cy=".3" r=".8"><stop stopColor="#52615c" stopOpacity=".55"/><stop offset="1" stopColor="#172322"/></radialGradient>
+          <clipPath id="atlas-sphere"><circle cx="145" cy="138" r="101"/></clipPath>
+        </defs>
+        <path d="M15 138h260M145 8v260" stroke="currentColor" strokeWidth=".6" strokeDasharray="2 5" opacity=".35"/>
+        <circle cx="145" cy="138" r="116" stroke="currentColor" strokeWidth=".7" strokeDasharray="1 7" opacity=".55"/>
+        <circle cx="145" cy="138" r="101" fill="url(#atlas-surface)" stroke="currentColor"/>
+        <g clipPath="url(#atlas-sphere)" stroke="currentColor" strokeWidth=".65">
+          <g opacity=".3"><ellipse cx="145" cy="138" rx="41" ry="101"/><ellipse cx="145" cy="138" rx="78" ry="101"/><ellipse cx="145" cy="138" rx="101" ry="39"/><ellipse cx="145" cy="138" rx="101" ry="74"/><path d="M44 138h202M145 37v202"/></g>
+          <g fill="#91ab98" fillOpacity=".18" strokeOpacity=".65" strokeLinejoin="round">
+            <path d="m108 89 9-15 15-2 8-12 7 4-3 16 13 7 4 14 15 4 15-5 17 8 6 13 21 7 15 18-11 9-22-9-14 7-14-6-9-18-13 3-8-8-10 2-5-12-9 2-2-10-14-2-4-8-10 1Z"/>
+            <path d="m129 128 22-5 15 9 14 22-9 21-9 3-1 15-15 20-8-11-4-25-12-16-4-19Z"/>
+            <path d="m58 85 21-17 16 7-2 17-11 9 3 15-13 9-14-10-9-17Z"/>
+            <path d="m70 143 20 5 12 19-8 18-4 22-12 10-3-27-9-18Z"/>
+            <path d="m217 189 16-7 15 12-9 15-22-3Z"/>
+          </g>
+        </g>
+        <g stroke="currentColor" strokeWidth=".8"><circle cx="145" cy="100" r="7"/><path d="M145 89v22m-11-11h22M153 96l42-39h61" opacity=".7"/><circle cx="206" cy="142" r="3" fill="currentColor"/><path d="m209 142 39 22h27" opacity=".5"/></g>
+        <g fill="currentColor" fontFamily="var(--mono)" fontSize="6" letterSpacing="1"><text x="201" y="49">REF. 01 / EUROPE</text><text x="107" y="267">1939 — 1945</text></g>
+      </svg>
+      <div className="atlas-index"><span className="visual-kicker">ATLAS OF WAR / WWII</span><strong>History.<br/>With sources.</strong><div className="atlas-records">{[['01', 'Source & evidence'], ['02', 'Verified fact'], ['03', 'Question & citation']].map(([id, label]) => <span key={id}><small>{id}</small>{label}</span>)}</div><span className="atlas-pipeline">YAML → VALIDATE → SQLite</span></div>
+    </div>}
+    {variant === 'drivester' && <div className="drivester-visual">
+      <svg className="motor-object" viewBox="0 0 320 280" fill="none">
+        <defs><linearGradient id="motor-face" x1="80" y1="65" x2="230" y2="200" gradientUnits="userSpaceOnUse"><stop stopColor="#849b99" stopOpacity=".5"/><stop offset="1" stopColor="#293c3f"/></linearGradient></defs>
+        <ellipse cx="161" cy="237" rx="100" ry="12" fill="#090e10" opacity=".6"/>
+        <g stroke="currentColor" strokeWidth="1" strokeLinejoin="round">
+          <path d="m77 121 85-47 88 49v84l-86 47-87-48Z" fill="#19272c"/>
+          <path d="m77 121 87 48 86-46M164 169v85" opacity=".5"/>
+          <path d="m77 108 85-47 88 49v15l-86 47-87-48Z" fill="#283c41"/>
+          <path d="m77 92 85-47 88 49v16l-86 47-87-48Z" fill="url(#motor-face)"/>
+          <path d="m77 92 87 48 86-46M164 140v17" opacity=".55"/>
+          <ellipse cx="164" cy="94" rx="41" ry="23" fill="#18282d"/>
+          <ellipse cx="164" cy="92" rx="29" ry="16" fill="#3b5557"/>
+          <path d="M153 89V44h22v45c-3 8-19 8-22 0Z" fill="#78928e"/>
+          <ellipse cx="164" cy="44" rx="11" ry="6" fill="#a5bcb1"/>
+          <path d="M84 144l72 40m-72-30 72 40m-72-30 72 40m15-19 71-39m-71 49 71-39m-71 49 71-39" opacity=".3"/>
+          {[[94, 91], [162, 57], [231, 94], [164, 129]].map(([x, y]) => <ellipse key={`${x}-${y}`} cx={x} cy={y} rx="4" ry="2.5" fill="#142026"/>)}
+          <path d="M218 227v14h38v-35m-30 17v10h23v-27m-15 12v8h8v-20" opacity=".55"/>
+          <path d="M61 95H40v115h21m-25-111 8-8m-8 123 8-8M168 33V17h65" strokeDasharray="2 4" opacity=".45"/>
+        </g>
+        <text x="238" y="20" fill="currentColor" fontFamily="var(--mono)" fontSize="6" letterSpacing="1">STEP / DIR</text>
+      </svg>
+      <div className="motor-control"><span className="visual-kicker">DRIVESTER / POSITION</span><div className="motor-dial"><svg viewBox="0 0 140 140" fill="none"><circle cx="70" cy="70" r="58" stroke="currentColor" strokeWidth=".6" opacity=".3"/>{Array.from({length: 24}, (_, i) => <path key={i} d={i % 3 === 0 ? 'M70 16v9' : 'M70 17v4'} transform={`rotate(${i * 15} 70 70)`} stroke="currentColor" strokeWidth={i % 3 === 0 ? 1.2 : .6} opacity=".65"/>)}<path d="M70 70 99 41" stroke="currentColor" strokeWidth="2"/><circle cx="70" cy="70" r="5" fill="#a9c7bb"/><path d="M70 37a33 33 0 0 1 23.3 9.7" stroke="#b9d3bf" strokeWidth="2"/></svg><span>45<small>°</small></span></div><div className="motor-signals"><span><i/> SERIAL</span><span>200 STEPS / REV</span></div><span className="motor-pipeline">DESKTOP → FIRMWARE → MOTION</span></div>
+    </div>}
     <span className="art-label">PROJECT ILLUSTRATION</span>
   </div>
 }

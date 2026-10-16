@@ -164,7 +164,7 @@ export function App() {
       {page('profile', 'hero', <>
         <Reveal className="hero-signature" delay={.1}><h1 id="profile-title" className="display-name"><Wordmark/></h1></Reveal>
         <div className="hero-main">
-          <Reveal className="hero-intro"><span className="eyebrow">SOFTWARE & SYSTEMS</span><h2>Software first.<br/><span>The whole system<br className="desktop-break"/> in view.</span></h2><p>I build software with a perspective that extends into electronics and mechanical design.</p><div className="hero-actions"><a className="metal-button" href={profile.github} target="_blank" rel="noreferrer"><Github size={16}/> Explore GitHub <ArrowUpRight size={15}/></a><button className="quiet-link" onClick={() => navigate('contact')}>Get in touch <ArrowUpRight size={15}/></button></div></Reveal>
+          <Reveal className="hero-intro"><span className="eyebrow">SOFTWARE & SYSTEMS</span><h2>Software first.<br/><span>The whole system<br className="desktop-break"/> in view.</span></h2><p>I build developer tools, web applications, and automation. With a background in electronics, embedded systems, and mechanical design, I most enjoy problems at the intersection of software and real-world constraints.</p><div className="hero-actions"><a className="metal-button" href={profile.github} target="_blank" rel="noreferrer"><Github size={16}/> Explore GitHub <ArrowUpRight size={15}/></a><button className="quiet-link" onClick={() => navigate('contact')}>Get in touch <ArrowUpRight size={15}/></button></div></Reveal>
           <Reveal className="hero-art" delay={.08}><SystemSculpture/></Reveal>
         </div>
       </>)}
@@ -177,13 +177,13 @@ export function App() {
       {page('expertise', 'expertise-page', <>
         <Reveal className="page-heading"><div><span className="eyebrow">EXPERTISE</span><h1 id="expertise-title">Software & beyond.</h1></div></Reveal>
         <div className="expertise-layout">
-          <Reveal className="expertise-sidebar" delay={.06}><p>Software is my primary focus.<br/>Electronics and mechanical design<br className="desktop-break"/> round out the picture.</p><div className="education-note"><span className="eyebrow">EDUCATION</span><h2>University of South Florida</h2><p>Electrical Engineering coursework.<br/>Approximately half of the degree completed;<br className="desktop-break"/> studies currently on a break.</p></div></Reveal>
+          <Reveal className="expertise-sidebar" delay={.06}><p>My interest in software grew through electronics and engineering projects. As a Project Support TA at USF, I helped students with Arduino programming, electronics, CAD, and prototyping in labs and office hours.</p><div className="education-note"><span className="eyebrow">EDUCATION</span><h2>University of South Florida</h2><p>Electrical Engineering studies, including Calculus, Differential Equations, Programming, and engineering fundamentals.</p></div></Reveal>
           <Reveal className="expertise-tabs-wrap" delay={.1}><Expertise/></Reveal>
         </div>
       </>)}
 
       {page('contact', 'contact-page', <div className="contact-layout">
-        <Reveal className="contact-intro"><span className="eyebrow">CONTACT</span><h1 id="contact-title">Talk code.<br/><em>Talk shop.</em></h1><p>Questions, collaborations,<br className="desktop-break"/> or something worth building.</p><div className="contact-socials"><a href={profile.github} target="_blank" rel="noreferrer"><Github size={16}/><span>GitHub</span></a><a href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/><span>LinkedIn</span></a><a href={profile.youtube} target="_blank" rel="noreferrer" aria-label="Jason Shaw on YouTube"><Youtube size={17}/></a><a href={profile.instagram} target="_blank" rel="noreferrer" aria-label="Jason Shaw on Instagram"><Instagram size={16}/></a></div></Reveal>
+        <Reveal className="contact-intro"><span className="eyebrow">CONTACT</span><h1 id="contact-title">Talk code.<br/><em>Talk shop.</em></h1><p>I’m interested in software development and related technical opportunities. Get in touch about a role, a collaboration, or a project you’re working on.</p><div className="contact-socials"><a href={profile.github} target="_blank" rel="noreferrer"><Github size={16}/><span>GitHub</span></a><a href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/><span>LinkedIn</span></a><a href={profile.youtube} target="_blank" rel="noreferrer" aria-label="Jason Shaw on YouTube"><Youtube size={17}/></a><a href={profile.instagram} target="_blank" rel="noreferrer" aria-label="Jason Shaw on Instagram"><Instagram size={16}/></a></div></Reveal>
         <Reveal className="form-panel" delay={.08}><ContactForm/></Reveal>
       </div>)}
     </main>

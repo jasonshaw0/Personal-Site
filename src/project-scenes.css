@@ -3,6 +3,8 @@
   .project-scene[data-visual='resources'] { --scene-accent: #c4ccaf; }
   .project-scene[data-visual='crossplay'] { --scene-accent: #a9cfd1; }
   .project-scene[data-visual='dates'] { --scene-accent: #c7c6dc; }
+  .project-scene[data-visual='atlas'] { --scene-accent: #c1ccb2; }
+  .project-scene[data-visual='drivester'] { --scene-accent: #acc9cd; }
   .project-slide.is-selected .project-scene { border-color: #5a7069; }
   .project-slide:focus-within .project-scene { border-color: #97b6a8; }
   .scene-plane { position: absolute; inset: 0; transform-style: preserve-3d; }
@@ -59,6 +61,43 @@
   .date-ruler > i { width: 1px; height: 4px; background: #a0b2bf42; }
   .date-ruler > i:nth-child(4n + 1) { height: 8px; }
   .date-ruler > .date-tick-active { height: 12px; background: #c4ddf1; box-shadow: 0 0 8px #aacfee88; animation: date-tick 6s ease-in-out infinite; }
+
+  /* Cartographic reference and motor study share the existing technical linework. */
+  .atlas-visual, .drivester-visual { width: min(100%, 590px); height: 100%; display: flex; align-items: center; justify-content: center; gap: 28px; color: var(--scene-accent); }
+  .atlas-globe, .motor-object { width: 53%; max-height: 100%; min-width: 0; filter: drop-shadow(8px 13px 14px #0003); }
+  .atlas-index, .motor-control { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .atlas-index > strong { font: 450 clamp(24px, 2.7vw, 38px)/1.15 var(--display); letter-spacing: -.045em; color: #d0d7d2; }
+  .atlas-records { display: flex; flex-direction: column; font: 9px var(--mono); }
+  .atlas-records > span { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #a6b69b30; }
+  .atlas-records small { font-size: 7px; opacity: .6; }
+  .atlas-pipeline, .motor-pipeline { font: 6px/1.6 var(--mono); letter-spacing: .06em; color: #9aaba3; }
+  .motor-control { align-items: center; gap: 14px; }
+  .motor-dial { position: relative; width: min(100%, 160px); }
+  .motor-dial svg { width: 100%; }
+  .motor-dial > span { position: absolute; top: 66%; left: 50%; transform: translateX(-50%); font: 400 19px var(--display); color: #d1ddd7; }
+  .motor-dial small { font-size: 12px; }
+  .motor-signals { display: flex; gap: 13px; align-items: center; font: 6px var(--mono); }
+  .motor-signals > span { display: inline-flex; gap: 5px; align-items: center; }
+  .motor-signals i { width: 4px; height: 4px; background: #b5d2b8; box-shadow: 0 0 6px #b5d2b855; border-radius: 50%; }
+
+  @media (max-width: 700px) {
+    .atlas-visual, .drivester-visual { gap: 12px; }
+    .atlas-index, .motor-control { gap: 12px; }
+    .atlas-index > strong { font-size: 22px; }
+    .atlas-records { font-size: 6px; }
+    .atlas-records > span { gap: 6px; padding: 8px 0; }
+    .atlas-records small { font-size: 5px; }
+    .atlas-pipeline, .motor-pipeline { font-size: 5px; letter-spacing: 0; }
+    .motor-signals { flex-direction: column; gap: 7px; }
+    .motor-dial > span { font-size: 16px; }
+  }
+  @media (max-height: 570px) and (min-width: 701px), (max-width: 700px) and (max-height: 760px) {
+    .atlas-index > .visual-kicker, .atlas-records, .atlas-pipeline, .motor-control > .visual-kicker, .motor-pipeline { display: none; }
+    .atlas-index > strong { font-size: 20px; }
+    .motor-control { gap: 6px; }
+    .motor-dial { width: min(100%, 105px); }
+    .motor-signals { font-size: 5px; }
+  }
 
   @media (hover: hover) and (pointer: fine) {
     .project-slide.is-selected .project-scene:hover { border-color: #8da99b; }
