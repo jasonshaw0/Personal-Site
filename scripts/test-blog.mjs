@@ -59,12 +59,30 @@ console.log(greeting);
 
 ## A final observation
 
-This content tests rendering only. It describes no actual completed work.`)
+This content tests rendering only. It describes no actual completed work.
+
+Inline $E = mc^2$.
+
+$$
+\\int_0^1 x^2\\,dx = \\frac{1}{3}
+$$
+
+<span class="font-serif text-coral text-large">Styled text</span>
+
+<aside class="callout callout-tip">
+
+**Tip** with <mark>highlight</mark> and <u>underline</u>.
+
+</aside>
+
+<details><summary>More detail</summary>A collapsible section.</details>`)
   await fixture('mdx', 'status: published\ntags: [Software]\ndate: 2025-02-03', `export const result = 2 + 2
 
 ## An MDX component
 
-<p>Interactive-ready MDX result: {result}</p>`, 'mdx')
+<p>Interactive-ready MDX result: {result}</p>
+
+Inline $x^2$ and more.`, 'mdx')
   await fixture('hardware', 'status: published\ntags: [Hardware]\ndate: 2024-03-04\ncover: ""\ncoverAlt: ""\ncoverCaption: ""')
   await fixture('draft', 'status: draft\ntags: [SecretDraftTag]', 'DRAFT_SENTINEL_MUST_NOT_SHIP')
   await fixture('default-draft', 'tags: [DefaultDraftTag]', 'DEFAULT_DRAFT_SENTINEL')
@@ -86,6 +104,12 @@ This content tests rendering only. It describes no actual completed work.`)
   assert(article('.prose blockquote').text().includes('useful quoted observation'))
   assert.equal(article('.prose pre code').text().trim(), 'const greeting: string = "hello";\nconsole.log(greeting);')
   assert(article('.prose pre span[style]').length > 0, 'Code syntax must be highlighted')
+  assert.equal(article('.prose .katex').length, 2, 'Inline and display LaTeX must render')
+  assert.equal(article('.prose .katex-display').length, 1)
+  assert.equal(article('.prose .font-serif.text-coral.text-large').text(), 'Styled text')
+  assert.equal(article('.prose .callout-tip strong').text(), 'Tip')
+  assert.equal(article('.prose mark').text(), 'highlight')
+  assert.equal(article('.prose details summary').text(), 'More detail')
   assert.equal(article('.prose svg[role="img"]').length, 1)
   assert.equal(article('.prose iframe[title]').length, 1)
   assert.equal(article('link[rel="canonical"]').attr('href'), 'https://www.jason-shaw.com/blog/verification-markdown')
@@ -99,6 +123,7 @@ This content tests rendering only. It describes no actual completed work.`)
   assert.equal(article('.article-pagination a').length, 2)
   const mdx = await html(`blog/${prefix}mdx/index.html`)
   assert(mdx('.prose').text().includes('Interactive-ready MDX result: 4'))
+  assert.equal(mdx('.prose .katex').length, 1, 'MDX inherits the math renderer')
 
   const rss = load(await readFile('dist/rss.xml', 'utf8'), { xml: true })
   assert.equal(rss('item').length, 3)
