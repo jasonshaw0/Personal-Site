@@ -544,13 +544,22 @@ async function api(request: Request, env: AdminEnv, identity: Identity) {
     if (method === "DELETE" && !input.id)
       throw new ApiError(400, "Choose the block to remove.");
     return json(
-      await operation(request, env.DB, identity.email, "security", ip, () =>
-        cloudflare.changeBlock(
-          ip,
-          request.headers.get("CF-Connecting-IP") ?? "",
-          input.reason,
-          method === "DELETE" ? input.id : undefined,
-        ),
+      await operation(
+        request,
+        env.DB,
+        identity.email,
+        "security",
+        ip,
+        () =>
+          cloudflare.changeBlock(
+            ip,
+            request.headers.get("CF-Connecting-IP") ?? "",
+            input.reason,
+            method === "DELETE" ? input.id : undefined,
+          ),
+        method === "DELETE"
+          ? "security.unblock.requested"
+          : "security.block.requested",
       ),
     );
   }

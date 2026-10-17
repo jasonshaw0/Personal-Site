@@ -426,6 +426,99 @@ test("a widened or disabled WAF rule prevents every IP mutation", async () => {
   await assert.rejects(cf.changeBlock("8.8.8.8", "1.1.1.1", ""), /scope/);
   assert.equal(writes, 0);
 });
+
+test("unblocking can remove the current administrative IP and deletes only the selected list item", async () => {
+  const selected = "a".repeat(32),
+    other = "b".repeat(32),
+    writes: unknown[] = [];
+  const cf = new Cloudflare(cfConfig, async (input, init) => {
+    if (String(input).includes("/rulesets/"))
+      return Response.json({
+        success: true,
+        result: {
+          rules: [{ id: "rule", action: "block", enabled: true, expression }],
+        },
+      });
+    assert.equal(
+      new Headers(init?.headers).get("Authorization"),
+      "Bearer list-only",
+    );
+    if (init?.method === "GET")
+      return Response.json({
+        success: true,
+        result: [
+          { id: selected, ip: "8.8.8.8" },
+          { id: other, ip: "8.8.4.4" },
+        ],
+      });
+    assert.equal(init?.method, "DELETE");
+    assert.match(String(input), /\/rules\/lists\/list\/items$/);
+    writes.push(JSON.parse(String(init?.body)));
+    return Response.json({
+      success: true,
+      result: { operation_id: "unblock-operation" },
+    });
+  });
+  const result = await cf.changeBlock(
+    "::ffff:8.8.8.8",
+    "8.8.8.8",
+    "",
+    selected,
+  );
+  assert.equal(result.operationId, "unblock-operation");
+  assert.deepEqual(writes, [{ items: [{ id: selected }] }]);
+});
+
+test("unblocking rejects stale item IDs and mismatched addresses without deleting anything", async () => {
+  let writes = 0;
+  const cf = new Cloudflare(cfConfig, async (input, init) => {
+    if (init?.method !== "GET") writes++;
+    return Response.json({
+      success: true,
+      result: String(input).includes("/rulesets/")
+        ? {
+            rules: [{ id: "rule", action: "block", enabled: true, expression }],
+          }
+        : [{ id: "a".repeat(32), ip: "8.8.8.8" }],
+    });
+  });
+  await assert.rejects(
+    cf.changeBlock("8.8.8.8", "1.1.1.1", "", "b".repeat(32)),
+    /selected block changed/,
+  );
+  await assert.rejects(
+    cf.changeBlock("8.8.4.4", "1.1.1.1", "", "a".repeat(32)),
+    /selected block changed/,
+  );
+  assert.equal(writes, 0);
+});
+
+test("unblock requests keep security locking and produce a distinct audit action", async () => {
+  const { db, sqlite } = database();
+  try {
+    await operation(
+      new Request(auth.APP_ORIGIN, {
+        headers: { "Idempotency-Key": crypto.randomUUID() },
+      }),
+      db,
+      "owner",
+      "security",
+      "8.8.8.8",
+      async () => ({ operationId: "queued" }),
+      "security.unblock.requested",
+    );
+    assert.equal(
+      sqlite.prepare("SELECT kind FROM operations").get()?.kind,
+      "security",
+    );
+    assert.equal(
+      sqlite.prepare("SELECT action FROM audit").get()?.action,
+      "security.unblock.requested",
+    );
+  } finally {
+    sqlite.close();
+  }
+});
 test("IP and date validation reject ranges, private addresses, future and reversed periods", () => {
   for (const ip of [
     "127.0.0.1",

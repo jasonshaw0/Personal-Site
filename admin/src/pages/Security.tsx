@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ipaddr from "ipaddr.js";
-import { ShieldCheck, Trash2 } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { api, dateRange, dateTime, errorMessage, number } from "../api";
 import { useResource } from "../hooks";
 import type { BlocksData, EventsData } from "../types";
@@ -29,6 +29,8 @@ export default function Security({
     [country, setCountry] = useState(""),
     [ip, setIP] = useState(""),
     [reason, setReason] = useState(""),
+    [ipAction, setIPAction] = useState("block"),
+    [blockSearch, setBlockSearch] = useState(""),
     [busy, setBusy] = useState(false);
   const events = useResource<EventsData>(
       tab === "events"
@@ -36,6 +38,31 @@ export default function Security({
         : null,
     ),
     blocks = useResource<BlocksData>("/security/blocks", 30000);
+  const managedByAddress = useMemo(() => {
+    const entries = new Map<string, BlocksData["blocks"][number]>();
+    for (const item of blocks.data?.blocks ?? []) {
+      try {
+        entries.set(ipaddr.process(item.ip).toString(), item);
+      } catch {
+        /* Unsupported entries remain visible in the managed list. */
+      }
+    }
+    return entries;
+  }, [blocks.data]);
+  const managedBlock = (address: string) => {
+    try {
+      const normalized = ipaddr.process(address.trim()).toString();
+      return managedByAddress.get(normalized);
+    } catch {
+      return undefined;
+    }
+  };
+  const visibleBlocks =
+    blocks.data?.blocks.filter((item) =>
+      `${item.ip} ${item.comment ?? ""}`
+        .toLowerCase()
+        .includes(blockSearch.trim().toLowerCase()),
+    ) ?? [];
   const changeBlock = async (address: string, removeId?: string) => {
     setBusy(true);
     try {
@@ -71,7 +98,9 @@ export default function Security({
       }
       notify(
         complete
-          ? `${address} ${removeId ? "removed from" : "added to"} the managed IP list.`
+          ? removeId
+            ? `${address} unblocked from the managed IP list. Other Cloudflare rules still apply.`
+            : `${address} added to the managed IP list.`
           : "The update is still pending in Cloudflare. Refresh the list to confirm its final state.",
       );
       setIP("");
@@ -85,15 +114,16 @@ export default function Security({
   };
   const askBlock = (value: string, removeId?: string) => {
     try {
+      value = value.trim();
       if (!ipaddr.isValid(value) || value.includes("/") || value.includes("%"))
         throw new Error("Enter one IPv4 or IPv6 address.");
       const normalized = ipaddr.process(value).toString();
       confirm({
-        title: removeId ? "Remove this IP block?" : "Block this IP address?",
+        title: removeId ? "Unblock this IP address?" : "Block this IP address?",
         description: removeId
           ? `Remove ${normalized} from the dedicated website block list. Other Cloudflare rules will continue to apply.`
           : `Block ${normalized} on the public portfolio and blog. The admin hostname is excluded, and your current administrative IP cannot be blocked.`,
-        label: removeId ? "Remove block" : "Block address",
+        label: removeId ? "Unblock IP" : "Block address",
         danger: !removeId,
         run: () => changeBlock(normalized, removeId),
       });
@@ -280,13 +310,21 @@ export default function Security({
                               <td>{item.sampleInterval}</td>
                               <td>
                                 <button
-                                  className="inline-button danger-text"
+                                  className={`inline-button ${managedBlock(item.clientIP) ? "" : "danger-text"}`}
+                                  aria-label={`${managedBlock(item.clientIP) ? "Unblock" : "Block"} IP ${item.clientIP}`}
                                   disabled={
                                     busy || !item.clientIP || !blocks.data
                                   }
-                                  onClick={() => askBlock(item.clientIP)}
+                                  onClick={() =>
+                                    askBlock(
+                                      item.clientIP,
+                                      managedBlock(item.clientIP)?.id,
+                                    )
+                                  }
                                 >
-                                  Block IP
+                                  {managedBlock(item.clientIP)
+                                    ? "Unblock IP"
+                                    : "Block IP"}
                                 </button>
                               </td>
                             </tr>
@@ -314,16 +352,37 @@ export default function Security({
             <ErrorNotice message={blocks.error} onRetry={blocks.refresh} />
           )}
           <Panel
-            title="Add an IP block"
-            description="One public IPv4 or IPv6 address; ranges and private addresses are rejected"
+            title="Block or unblock an IP"
+            description="Manage one public IPv4 or IPv6 address in the dedicated list"
           >
             <form
               className="block-form"
               onSubmit={(event) => {
                 event.preventDefault();
-                askBlock(ip);
+                if (ipAction === "unblock") {
+                  const item = managedBlock(ip);
+                  if (!item) {
+                    notify(
+                      "This address has no manual block in the managed list. Other Cloudflare rules may still block its requests.",
+                      true,
+                    );
+                    return;
+                  }
+                  askBlock(item.ip, item.id);
+                } else askBlock(ip);
               }}
             >
+              <label>
+                Action
+                <select
+                  value={ipAction}
+                  onChange={(event) => setIPAction(event.target.value)}
+                  disabled={busy}
+                >
+                  <option value="block">Block IP</option>
+                  <option value="unblock">Unblock IP</option>
+                </select>
+              </label>
               <label>
                 IP address
                 <input
@@ -334,18 +393,27 @@ export default function Security({
                   disabled={busy}
                 />
               </label>
-              <label>
-                Reason <span className="muted">(optional)</span>
-                <input
-                  value={reason}
-                  maxLength={300}
-                  onChange={(event) => setReason(event.target.value)}
-                  placeholder="Why is this address being blocked?"
-                  disabled={busy}
-                />
-              </label>
-              <button className="button danger" disabled={busy || !blocks.data}>
-                {busy ? "Applying…" : "Review block"}
+              {ipAction === "block" && (
+                <label>
+                  Reason <span className="muted">(optional)</span>
+                  <input
+                    value={reason}
+                    maxLength={300}
+                    onChange={(event) => setReason(event.target.value)}
+                    placeholder="Why is this address being blocked?"
+                    disabled={busy}
+                  />
+                </label>
+              )}
+              <button
+                className={`button ${ipAction === "unblock" ? "primary" : "danger"}`}
+                disabled={busy || !blocks.data}
+              >
+                {busy
+                  ? "Applying…"
+                  : ipAction === "unblock"
+                    ? "Review unblock"
+                    : "Review block"}
               </button>
             </form>
             {blocks.data?.currentIP && (
@@ -358,17 +426,31 @@ export default function Security({
           </Panel>
           <Panel
             title="Managed addresses"
-            description="Creation times and reasons are returned by Cloudflare"
+            description="Unblock IP removes a manual block from this list. Other Cloudflare rules continue to apply."
             action={
               <button className="inline-button" onClick={blocks.refresh}>
                 Refresh
               </button>
             }
           >
+            <div className="list-controls">
+              <input
+                aria-label="Search managed IP blocks"
+                placeholder="Search blocked IPs or reasons…"
+                value={blockSearch}
+                onChange={(event) => setBlockSearch(event.target.value)}
+              />
+            </div>
             {blocks.loading ? (
               <Loading />
-            ) : !blocks.data?.blocks.length ? (
-              <Empty title="No manually blocked addresses." />
+            ) : !visibleBlocks.length ? (
+              <Empty
+                title={
+                  blockSearch
+                    ? "No matching blocked addresses."
+                    : "No manually blocked addresses."
+                }
+              />
             ) : (
               <div className="table-wrap">
                 <table>
@@ -381,7 +463,7 @@ export default function Security({
                     </tr>
                   </thead>
                   <tbody>
-                    {blocks.data.blocks.map((item) => (
+                    {visibleBlocks.map((item) => (
                       <tr key={item.id}>
                         <td>
                           <code>{item.ip}</code>
@@ -391,11 +473,12 @@ export default function Security({
                         <td>
                           <button
                             className="inline-button"
+                            aria-label={`Unblock IP ${item.ip}`}
                             disabled={busy}
                             onClick={() => askBlock(item.ip, item.id)}
                           >
-                            <Trash2 size={13} />
-                            Remove
+                            <ShieldCheck size={13} />
+                            Unblock IP
                           </button>
                         </td>
                       </tr>

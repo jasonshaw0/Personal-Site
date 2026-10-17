@@ -7,6 +7,7 @@ export async function operation<T>(
   kind: string,
   target: string,
   action: () => Promise<T>,
+  auditAction = kind,
 ) {
   const id = request.headers.get("Idempotency-Key");
   if (!id || !/^[a-f0-9-]{36}$/i.test(id))
@@ -58,7 +59,7 @@ export async function operation<T>(
     await audit(
       db,
       actor,
-      kind,
+      auditAction,
       target,
       "success",
       JSON.stringify({
@@ -82,7 +83,7 @@ export async function operation<T>(
     await audit(
       db,
       actor,
-      kind,
+      auditAction,
       target,
       "failed",
       error instanceof Error ? error.message : "Operation failed",

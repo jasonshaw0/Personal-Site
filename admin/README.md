@@ -35,6 +35,8 @@ Analytics supports UTC date ranges, previous-period comparisons, page/blog paths
 
 **Managed IP blocks** uses only the dedicated account list `jasonshaw_admin_blocked_ips`. Its rule is:
 
+To unblock an address, open **Security → Managed IP blocks**, find it using the search field, choose **Unblock IP**, and confirm. You can also select **Action → Unblock IP** and enter its address, or unblock a managed address directly from a security-event row. The interface waits for Cloudflare's list operation and refreshes the managed addresses. This removes that manual list entry; historical security events remain, and unrelated automated or firewall rules can still block a request. Block and unblock requests have distinct audit-log actions.
+
 ```text
 (http.host in {"jason-shaw.com" "www.jason-shaw.com"} and ip.src in $jasonshaw_admin_blocked_ips)
 ```
