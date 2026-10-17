@@ -1,0 +1,12 @@
+:root {
+  color-scheme: dark;
+  --bg: #111315;
+  --surface: #191c1f;
+  --text: #dbe0dd;
+  --muted: #a0a7a9;
+  --dim: #7f8a8e;
+  --line: #303538;
+  --accent: #bfd4cd;
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Syne Variable', sans-serif;
+}

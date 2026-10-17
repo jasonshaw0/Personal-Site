@@ -1,0 +1,62 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro'
+import PostCard from '../../components/PostCard.astro'
+import { publishedPosts } from '../../lib/posts'
+const posts = await publishedPosts()
+const tags = [...new Set(posts.flatMap(post => post.data.tags))].sort()
+const featured = posts.find(post => post.data.featured)
+const years = [...new Set(posts.map(post => post.data.date.getUTCFullYear()))]
+---
+<BlogLayout title="Writing" description="Notes on software, engineering, and the process of making things work. Writing by Jason Shaw.">
+  <section class="editorial-intro" aria-labelledby="writing-title">
+    <div class="intro-top"><span class="eyebrow">THE WORK / THE THINKING</span><span class="eyebrow intro-index">AN OPEN NOTEBOOK</span></div>
+    <h1 id="writing-title">A little further<br/><span>into the details.</span></h1>
+    <div class="intro-bottom"><p>Notes on software, engineering, and the process<br class="wide-only"/> of making things work. The decisions, the experiments,<br class="wide-only"/> and what I learn along the way.</p><a href="#archive" class="archive-jump">Explore the writing <span aria-hidden="true">↓</span></a></div>
+  </section>
+  {featured && <section class="featured-section" aria-labelledby="featured-title"><h2 class="eyebrow" id="featured-title">IN FOCUS</h2><PostCard post={featured} featured /></section>}
+  <section class="archive" id="archive" aria-labelledby="archive-title">
+    <div class="section-heading"><h2 id="archive-title">The archive<span class="article-count">{String(posts.length).padStart(2, '0')}</span></h2><span class="eyebrow">{posts.length ? 'LATEST FIRST' : 'A SPACE FOR WHAT COMES NEXT'}</span></div>
+    {posts.length > 0 ? <>
+      <div class="archive-tools" data-filters hidden>
+        <div class="tag-filters" role="group" aria-label="Filter articles by tag"><button type="button" data-tag="" aria-pressed="true">All writing</button>{tags.map(tag => <button type="button" data-tag={tag} aria-pressed="false">{tag}</button>)}</div>
+        <p id="filter-status" role="status" aria-live="polite">{posts.length} {posts.length === 1 ? 'article' : 'articles'}</p>
+      </div>
+      <div data-archive>{years.map(year => <section class="archive-year" data-year aria-labelledby={`year-${year}`}><h3 class="eyebrow year-label" id={`year-${year}`}>{year}</h3><div>{posts.filter(post => post.data.date.getUTCFullYear() === year).map(post => <div data-entry data-tags={JSON.stringify(post.data.tags)}><PostCard post={post}/></div>)}</div></section>)}</div>
+      <div class="filter-empty" data-filter-empty hidden><p>No articles with this tag yet.</p><a href="/blog#archive">View all writing ↗</a></div>
+    </> : <div class="empty-state">
+      <span class="empty-symbol" aria-hidden="true">[ &nbsp; ]</span>
+      <div><span class="eyebrow">NOTHING PUBLISHED. YET.</span><h3>Good notes take a little time.</h3><p>This notebook is open. The first entry is still in the making.<br class="wide-only"/> Until then, you can explore what I’ve been building.</p><a class="text-link" href="/#work">Explore selected work <span aria-hidden="true">↗</span></a></div>
+    </div>}
+  </section>
+  <aside class="rss-note"><div><span class="eyebrow">AT YOUR OWN PACE</span><p>No algorithm. Just new writing, when it’s ready.</p></div><a class="text-link" href="/rss.xml">Subscribe via RSS <span aria-hidden="true">↗</span></a></aside>
+</BlogLayout>
+<script>
+  const filters = document.querySelector<HTMLElement>('[data-filters]')
+  if (filters) {
+    const entries = [...document.querySelectorAll<HTMLElement>('[data-entry]')]
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button[data-tag]')]
+    const update = () => {
+      const tag = new URL(location.href).searchParams.get('tag') ?? ''
+      let count = 0
+      entries.forEach(entry => {
+        entry.hidden = Boolean(tag && !JSON.parse(entry.dataset.tags ?? '[]').includes(tag))
+        if (!entry.hidden) count++
+      })
+      buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.tag === tag)))
+      document.querySelectorAll<HTMLElement>('[data-year]').forEach(year => { year.hidden = ![...year.querySelectorAll<HTMLElement>('[data-entry]')].some(entry => !entry.hidden) })
+      const status = document.querySelector('#filter-status')!
+      status.textContent = `${count} ${count === 1 ? 'article' : 'articles'}${tag ? ` tagged “${tag}”` : ''}`
+      document.querySelector<HTMLElement>('[data-filter-empty]')!.hidden = count > 0
+    }
+    filters.hidden = false
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const url = new URL(location.href)
+      if (button.dataset.tag) url.searchParams.set('tag', button.dataset.tag)
+      else url.searchParams.delete('tag')
+      history.pushState(null, '', url)
+      update()
+    }))
+    window.addEventListener('popstate', update)
+    update()
+  }
+</script>

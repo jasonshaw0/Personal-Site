@@ -1,11 +1,8 @@
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     if (new URL(request.url).pathname.startsWith('/api/')) return env.CONTACT.fetch(request)
-    const response = await env.ASSETS.fetch(request)
-    const url = new URL(request.url)
-    if (response.status !== 404 || request.method !== 'GET' || url.pathname.startsWith('/assets/')) {
-      return response
-    }
-    return env.ASSETS.fetch(new Request(new URL('/index.html', url), request))
+    // Portfolio sections use hashes on /. Missing blog posts and assets must
+    // retain their 404 status rather than return the portfolio's SPA shell.
+    return env.ASSETS.fetch(request)
   },
 } satisfies ExportedHandler<Env>

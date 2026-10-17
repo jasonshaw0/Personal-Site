@@ -156,7 +156,7 @@ export function App() {
     <header className="site-header">
       <button className="small-wordmark" title="Profile" onClick={() => navigate('profile')}><Wordmark/></button>
       <nav className="main-nav" aria-label="Main navigation">{pages.map(item => <button key={item.id} aria-current={active === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>{item.name}{active === item.id && <motion.span className="nav-active" layoutId="active-page" transition={{duration: reduced ? 0 : .4, ease}}/>}</button>)}</nav>
-      <a className="header-github" href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={16}/><span>GitHub</span><ArrowUpRight size={13}/></a>
+      <div className="header-links"><a className="header-github" href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={16}/><span>GitHub</span><ArrowUpRight size={13}/></a><a className="header-writing" href="/blog">Writing <span aria-hidden="true">↗</span></a></div>
     </header>
     <MobileNavigation pages={pages} active={active} open={menuOpen} onOpenChange={setMenuOpen} onNavigate={navigate} onHelp={() => setIntroOpen(true)}/>
 

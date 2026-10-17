@@ -50,7 +50,7 @@ export function MobileNavigation<PageId extends string>({ pages, active, open, o
       }}>
       <div className="mobile-menu-heading"><Wordmark/><button className="mobile-menu-close" aria-label="Close navigation" onClick={() => onOpenChange(false)}><X size={18} strokeWidth={1.4}/></button></div>
       <nav aria-label="Mobile navigation">{pages.map((page, index) => <button key={page.id} aria-current={active === page.id ? 'page' : undefined} onClick={() => { onOpenChange(false); onNavigate(page.id) }}><span className="mobile-menu-index">{String(index + 1).padStart(2, '0')}</span><span>{page.name}</span><ArrowUpRight size={15} strokeWidth={1.3}/></button>)}</nav>
-      <div className="mobile-menu-footer"><a href={profile.github} target="_blank" rel="noreferrer"><Github size={14}/>GitHub<ArrowUpRight size={12}/></a><button onClick={() => { onOpenChange(false); onHelp() }}><CircleHelp size={13}/>Navigation help</button></div>
+      <div className="mobile-menu-footer"><div className="mobile-external-links"><a href={profile.github} target="_blank" rel="noreferrer"><Github size={14}/>GitHub<ArrowUpRight size={12}/></a><a className="header-writing" href="/blog">Writing <span aria-hidden="true">↗</span></a></div><button onClick={() => { onOpenChange(false); onHelp() }}><CircleHelp size={13}/>Navigation help</button></div>
     </dialog>
   </div>
 }

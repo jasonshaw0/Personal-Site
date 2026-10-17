@@ -1,0 +1,13 @@
+---
+import { type Post, postUrl, formatDate, readingTime } from '../lib/posts'
+interface Props { post: Post; featured?: boolean }
+const { post, featured = false } = Astro.props
+---
+<article class:list={['post-card', { 'featured-post': featured }]}>
+  <div class="post-date"><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>{featured && <span class="eyebrow">Featured</span>}</div>
+  <div class="post-summary">
+    <h3><a href={postUrl(post)}>{post.data.title}<span class="post-arrow" aria-hidden="true">↗</span></a></h3>
+    <p>{post.data.description}</p>
+    <div class="post-meta"><ul aria-label="Tags">{post.data.tags.map(tag => <li><a href={`/blog?tag=${encodeURIComponent(tag)}#archive`}>{tag}</a></li>)}</ul><span>{readingTime(post)} min read</span></div>
+  </div>
+</article>

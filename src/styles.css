@@ -13,7 +13,7 @@
 }
 
 @layer base {
-  :root { color-scheme: dark; font-family: 'Instrument Sans Variable', sans-serif; color: #dbe0dd; background: #111315; --bg: #111315; --surface: #191c1f; --text: #dbe0dd; --muted: #a0a7a9; --dim: #7f8a8e; --line: #303538; --accent: #bfd4cd; --mono: 'IBM Plex Mono', monospace; --display: 'Syne Variable', sans-serif; --gutter: clamp(28px, 5vw, 88px); font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+  :root { font-family: 'Instrument Sans Variable', sans-serif; color: var(--text); background: var(--bg); --gutter: clamp(28px, 5vw, 88px); font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
   html, body, #root { height: 100%; }
   html { height: 100dvh; overflow: hidden; }
   body { margin: 0; min-width: 320px; overflow: hidden; overscroll-behavior: none; }

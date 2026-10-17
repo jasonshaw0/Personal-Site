@@ -1,0 +1,79 @@
+---
+import { render } from 'astro:content'
+import BlogLayout from '../../layouts/BlogLayout.astro'
+import PostCard from '../../components/PostCard.astro'
+import { publishedPosts, postSlug, postUrl, formatDate, readingTime } from '../../lib/posts'
+export async function getStaticPaths() {
+  const posts = await publishedPosts()
+  return posts.map((post, index) => ({ params: { slug: postSlug(post) }, props: { post, newer: posts[index - 1], older: posts[index + 1], related: posts.filter(other => other.id !== post.id && other.data.tags.some(tag => post.data.tags.includes(tag))).slice(0, 2) } }))
+}
+const { post, newer, older, related } = Astro.props
+const { Content, headings } = await render(post)
+const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 3)
+---
+<BlogLayout title={post.data.title} description={post.data.description} image={post.data.cover} article={{ date: post.data.date, updated: post.data.updated, tags: post.data.tags }}>
+  <div class="article-top"><a class="back-link" href="/blog#archive">← All writing</a><span class="eyebrow">NOTES BY JASON SHAW</span></div>
+  <article>
+    <header class="article-header">
+      <div class="article-tags">{post.data.tags.map(tag => <a href={`/blog?tag=${encodeURIComponent(tag)}#archive`}>{tag}</a>)}</div>
+      <h1>{post.data.title}</h1><p class="article-deck">{post.data.description}</p>
+      <div class="article-byline"><span>Jason Shaw</span><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time><span>{readingTime(post)} min read</span>{post.data.updated && <span>Updated {formatDate(post.data.updated)}</span>}</div>
+    </header>
+    {post.data.cover && <figure class="article-cover"><img src={post.data.cover} alt={post.data.coverAlt} fetchpriority="high"/>{post.data.coverCaption && <figcaption>{post.data.coverCaption}</figcaption>}</figure>}
+    <div class:list={['reading-layout', { 'has-toc': post.data.toc && toc.length >= 3 }]}>
+      {post.data.toc && toc.length >= 3 && <aside class="table-of-contents"><details open><summary>On this page</summary><nav aria-label="Table of contents"><ol>{toc.map(heading => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details></aside>}
+      <div class="prose"><Content /></div>
+    </div>
+    <div class="article-end"><span class="eyebrow">END OF NOTE</span><a href="/blog#archive">Back to the archive ↗</a></div>
+  </article>
+  {(older || newer) && <nav class="article-pagination" aria-label="More writing">{older ? <a href={postUrl(older)}><span class="eyebrow">← OLDER NOTE</span><span>{older.data.title}</span></a> : <div/>}{newer && <a href={postUrl(newer)}><span class="eyebrow">NEWER NOTE →</span><span>{newer.data.title}</span></a>}</nav>}
+  {related.length > 0 && <section class="related" aria-labelledby="related-title"><h2 id="related-title">Connected notes</h2>{related.map(item => <PostCard post={item}/>)}</section>}
+</BlogLayout>
+<script>
+  document.querySelectorAll<HTMLPreElement>('.prose pre').forEach(pre => {
+    const code = pre.querySelector('code')
+    if (!code) return
+    const wrapper = document.createElement('div')
+    wrapper.className = 'code-block'
+    pre.before(wrapper)
+    wrapper.append(pre)
+    const toolbar = document.createElement('div')
+    toolbar.className = 'code-toolbar'
+    const language = document.createElement('span')
+    language.textContent = pre.dataset.language ?? 'Code'
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = 'Copy code'
+    button.setAttribute('aria-label', 'Copy code to clipboard')
+    const status = document.createElement('span')
+    status.className = 'sr-only'
+    status.setAttribute('role', 'status')
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? '')
+        button.textContent = 'Copied ✓'
+        status.textContent = 'Code copied to clipboard'
+      } catch {
+        button.textContent = 'Select code'
+        const range = document.createRange()
+        range.selectNodeContents(code)
+        const selection = window.getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+        status.textContent = 'Copy unavailable. Code selected; use your keyboard to copy.'
+      }
+      window.setTimeout(() => { button.textContent = 'Copy code' }, 2500)
+    })
+    toolbar.append(language, button, status)
+    wrapper.prepend(toolbar)
+  })
+  document.querySelectorAll<HTMLTableElement>('.prose table').forEach(table => {
+    const scroll = document.createElement('div')
+    scroll.className = 'table-scroll'
+    scroll.tabIndex = 0
+    scroll.setAttribute('role', 'region')
+    scroll.setAttribute('aria-label', table.caption?.textContent || 'Scrollable table')
+    table.before(scroll)
+    scroll.append(table)
+  })
+</script>

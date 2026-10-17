@@ -11,6 +11,9 @@
   .header-github { display: inline-flex; align-items: center; gap: 9px; color: #b9c2bf; font-size: 11px; }
   .header-github svg:last-child { color: var(--dim); margin-left: 7px; }
   .header-github:hover { color: var(--text); }
+  .header-links { display: flex; align-items: center; gap: 20px; }
+  .header-writing { display: inline-flex; align-items: center; gap: 5px; border-left: 1px solid var(--line); padding: 4px 0 4px 20px; color: var(--muted); font-size: 11px; }
+  .header-writing:hover { color: var(--accent); }
   .page-stage { position: relative; min-height: 0; min-width: 0; overflow: clip; isolation: isolate; }
   .page-stage:focus { outline: none; }
   .page { position: absolute; inset: 0; padding: clamp(24px, 4.2vh, 50px) var(--gutter); max-width: 1760px; margin-inline: auto; min-height: 0; display: flex; flex-direction: column; }

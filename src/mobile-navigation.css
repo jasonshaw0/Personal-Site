@@ -38,6 +38,9 @@
     .mobile-menu-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 12px; }
     .mobile-menu-footer > a, .mobile-menu-footer > button { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 4px 0; background: transparent; font-size: 9px; color: #a1b4a9; }
     .mobile-menu-footer > a:hover, .mobile-menu-footer > button:hover { color: #e1eee5; }
+    .mobile-external-links { display: flex; align-items: center; gap: 12px; }
+    .mobile-external-links a { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; font-size: 9px; color: var(--muted); }
+    .mobile-external-links .header-writing { padding-left: 12px; }
     .page-button { height: 32px; min-height: 32px; min-width: 44px; padding: 0; justify-content: center; }
     .page-button.previous-page { margin-left: -14px; }
     .page-button.next-page { margin-right: -14px; }
