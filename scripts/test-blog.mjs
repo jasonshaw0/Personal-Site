@@ -65,7 +65,7 @@ This content tests rendering only. It describes no actual completed work.`)
 ## An MDX component
 
 <p>Interactive-ready MDX result: {result}</p>`, 'mdx')
-  await fixture('hardware', 'status: published\ntags: [Hardware]\ndate: 2024-03-04')
+  await fixture('hardware', 'status: published\ntags: [Hardware]\ndate: 2024-03-04\ncover: ""\ncoverAlt: ""\ncoverCaption: ""')
   await fixture('draft', 'status: draft\ntags: [SecretDraftTag]', 'DRAFT_SENTINEL_MUST_NOT_SHIP')
   await fixture('default-draft', 'tags: [DefaultDraftTag]', 'DEFAULT_DRAFT_SENTINEL')
   await fixture('scheduled', 'status: published\ndate: 2999-01-01\ntags: [FutureTag]', 'FUTURE_SENTINEL_MUST_NOT_SHIP')

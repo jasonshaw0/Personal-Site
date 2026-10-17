@@ -13,7 +13,7 @@ const posts = defineCollection({
     updated: z.coerce.date().optional(),
     tags: z.array(z.string().trim().min(1).max(40)).max(12).default([]),
     status: z.enum(['draft', 'published']).default('draft'),
-    cover: z.string().regex(/^(\/[^/]|https:\/\/)/, 'Use a root-relative path or HTTPS URL').optional(),
+    cover: z.union([z.literal(''), z.string().regex(/^(\/[^/]|https:\/\/)/, 'Use a root-relative path or HTTPS URL')]).optional(),
     coverAlt: z.string().optional(),
     coverCaption: z.string().optional(),
     featured: z.boolean().default(false),
