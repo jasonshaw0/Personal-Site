@@ -40,7 +40,7 @@ toc: true
 
 Set `status: published` and rebuild to publish at `/blog/your-article-title`. Missing status defaults to `draft`. Drafts and future-dated posts have no public page and are excluded from listings, RSS, related links, and the sitemap. Future publication requires a new build after the date; there is no scheduler. Dates without a time mean midnight UTC. `updated` cannot precede `date`. Cover images require alt text.
 
-`formatting-example.md` is an explicitly unpublished formatting reference. There are no fabricated published posts or public draft previews. **Tracked draft files are still visible to anyone who can read the Git repository.** Keep confidential writing outside this repository; private draft storage belongs to the separately approved administration milestone.
+`formatting-example.md` is an explicitly unpublished formatting reference. There are no fabricated published posts or public draft previews. **Tracked draft files are still visible to anyone who can read the Git repository.** Keep confidential writing outside this repository; use the administration application for private D1 drafts.
 
 Put article images in `public/blog/images/` and reference them with root-relative URLs. Standard Markdown supports headings, tables, lists, links, blockquotes, images, and highlighted fenced code blocks. For captions and diagrams, use semantic HTML figures and accessible inline SVG; native video/audio and titled, appropriately sandboxed iframes are supported. MDX is available for content that actually needs components. Content and MDX are trusted author source, not an untrusted upload endpoint.
 
@@ -71,4 +71,6 @@ Worker tests cover contact behavior and routing. The blog integration check buil
 
 For browser review of a populated archive without publishing sample articles, run `npm run test:blog -- --review`, then `npm run preview` and inspect `/blog` and `/blog/verification-markdown`. This leaves clearly marked verification pages in `dist/` only. **Run `npm run build` afterward.** `preview:worker` also runs that clean build, so it does not retain verification pages. Browser checks use Playwriter exclusively.
 
-The private administration dashboard is a separate milestone and is not part of this implementation.
+## Private administration
+
+The separate administration application is live at **https://admin.jason-shaw.com**, protected by Cloudflare Access for **jj@mountmyfish.com**. It includes private D1 drafts, CodeMirror editing and safe previews, atomic GitHub publishing, live Cloudflare analytics/security reporting, scoped IP management, audit logs, and integration diagnostics. See [admin/README.md](admin/README.md) for the workflow, credential rotation dates, deployment, limits, and recovery procedures.

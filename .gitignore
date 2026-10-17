@@ -9,4 +9,10 @@ dist/
 artifacts/
 .playwriter*
 *.local
+admin/dist/
+admin/.wrangler/
+.dev.vars
+**/.dev.vars
+**/.dev.vars.*
+!**/.dev.vars.example
 old-website/

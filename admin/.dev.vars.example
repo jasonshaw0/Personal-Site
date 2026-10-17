@@ -1,0 +1,4 @@
+# Local Worker secrets only. Never prefix privileged values with VITE_.
+GITHUB_TOKEN=
+CF_ANALYTICS_TOKEN=
+CF_SECURITY_TOKEN=
