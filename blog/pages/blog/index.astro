@@ -4,32 +4,65 @@ import PostCard from '../../components/PostCard.astro'
 import { publishedPosts } from '../../lib/posts'
 const posts = await publishedPosts()
 const tags = [...new Set(posts.flatMap(post => post.data.tags))].sort()
-const featured = posts.find(post => post.data.featured)
 const years = [...new Set(posts.map(post => post.data.date.getUTCFullYear()))]
 ---
-<BlogLayout title="Writing" description="Notes on software, engineering, and the process of making things work. Writing by Jason Shaw.">
-  <section class="editorial-intro" aria-labelledby="writing-title">
-    <div class="intro-top"><span class="eyebrow">THE WORK / THE THINKING</span><span class="eyebrow intro-index">AN OPEN NOTEBOOK</span></div>
-    <h1 id="writing-title">A little further<br/><span>into the details.</span></h1>
-    <div class="intro-bottom"><p>Notes on software, engineering, and the process<br class="wide-only"/> of making things work. The decisions, the experiments,<br class="wide-only"/> and what I learn along the way.</p><a href="#archive" class="archive-jump">Explore the writing <span aria-hidden="true">↓</span></a></div>
-  </section>
-  {featured && <section class="featured-section" aria-labelledby="featured-title"><h2 class="eyebrow" id="featured-title">IN FOCUS</h2><PostCard post={featured} featured /></section>}
-  <section class="archive" id="archive" aria-labelledby="archive-title">
-    <div class="section-heading"><h2 id="archive-title">The archive<span class="article-count">{String(posts.length).padStart(2, '0')}</span></h2><span class="eyebrow">{posts.length ? 'LATEST FIRST' : 'A SPACE FOR WHAT COMES NEXT'}</span></div>
+<BlogLayout title="Writing" description="Notes on software, engineering, and things I’m working on. Writing by Jason Shaw." index>
+  <div class="writing-index">
+  <header class="writing-intro">
+    <h1>Writing</h1>
+    <p>Notes on software, engineering, and things I’m working on.</p>
+  </header>
+  <section class="archive" id="archive" aria-label="Posts">
     {posts.length > 0 ? <>
       <div class="archive-tools" data-filters hidden>
-        <div class="tag-filters" role="group" aria-label="Filter articles by tag"><button type="button" data-tag="" aria-pressed="true">All writing</button>{tags.map(tag => <button type="button" data-tag={tag} aria-pressed="false">{tag}</button>)}</div>
-        <p id="filter-status" role="status" aria-live="polite">{posts.length} {posts.length === 1 ? 'article' : 'articles'}</p>
+        <div class="tag-filters" role="group" aria-label="Filter articles by tag"><button type="button" data-tag="" aria-pressed="true">All posts</button>{tags.map(tag => <button type="button" data-tag={tag} aria-pressed="false">{tag}</button>)}</div>
+        <p id="filter-status" role="status" aria-live="polite">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
       </div>
-      <div data-archive>{years.map(year => <section class="archive-year" data-year aria-labelledby={`year-${year}`}><h3 class="eyebrow year-label" id={`year-${year}`}>{year}</h3><div>{posts.filter(post => post.data.date.getUTCFullYear() === year).map(post => <div data-entry data-tags={JSON.stringify(post.data.tags)}><PostCard post={post}/></div>)}</div></section>)}</div>
+      <div data-archive>{years.map(year => <section class="archive-year" data-year aria-labelledby={`year-${year}`}><h2 class="year-label" id={`year-${year}`}>{year}</h2><ul class="post-list" role="list" aria-labelledby={`year-${year}`}>{posts.filter(post => post.data.date.getUTCFullYear() === year).map(post => <li data-entry data-tags={JSON.stringify(post.data.tags)}><PostCard post={post} compact /></li>)}</ul></section>)}</div>
       <div class="filter-empty" data-filter-empty hidden><p>No articles with this tag yet.</p><a href="/blog#archive">View all writing ↗</a></div>
     </> : <div class="empty-state">
-      <span class="empty-symbol" aria-hidden="true">[ &nbsp; ]</span>
-      <div><span class="eyebrow">NOTHING PUBLISHED. YET.</span><h3>Good notes take a little time.</h3><p>This notebook is open. The first entry is still in the making.<br class="wide-only"/> Until then, you can explore what I’ve been building.</p><a class="text-link" href="/#work">Explore selected work <span aria-hidden="true">↗</span></a></div>
+      <p>No posts yet.</p>
     </div>}
   </section>
-  <aside class="rss-note"><div><span class="eyebrow">AT YOUR OWN PACE</span><p>No algorithm. Just new writing, when it’s ready.</p></div><a class="text-link" href="/rss.xml">Subscribe via RSS <span aria-hidden="true">↗</span></a></aside>
+  </div>
 </BlogLayout>
+<style>
+  :global(.blog-index .shell) { width: min(960px, calc(100% - 80px)); }
+  :global(.blog-index .blog-header) { min-height: 80px; }
+  .writing-index { min-height: 60vh; padding-bottom: 48px; }
+  .writing-intro { padding: 42px 0 28px; }
+  .writing-intro h1 { font-size: 34px; font-weight: 500; line-height: 1.3; letter-spacing: -.035em; }
+  .writing-intro p { margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.7; }
+  .archive-tools { padding: 0 0 18px; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); }
+  .tag-filters { gap: 4px 16px; }
+  .tag-filters button { border: 0; border-radius: 0; padding: 8px 0; min-height: 36px; font-size: 12px; }
+  .tag-filters button[aria-pressed='true'] { background: none; color: var(--text); text-decoration: underline; text-underline-offset: 7px; }
+  #filter-status { padding: 0; font: 12px/1.7 'Instrument Sans Variable', sans-serif; color: var(--muted); }
+  .archive-year { display: block; margin-top: 26px; }
+  .year-label { padding: 0 0 8px; color: var(--muted); font: 500 13px/1.7 'Instrument Sans Variable', sans-serif; }
+  .post-list { list-style: none; padding: 0; margin: 0; }
+  .writing-index :global(.post-card) { grid-template-columns: 115px minmax(0, 1fr); gap: 24px; padding: 20px 0; }
+  .writing-index :global(.post-date) { padding-top: 3px; font-size: 11px; }
+  .writing-index :global(.post-summary h3) { font-size: 20px; font-weight: 500; letter-spacing: -.015em; line-height: 1.45; text-wrap: pretty; }
+  .writing-index :global(.post-summary h3 a) { display: inline; }
+  .writing-index :global(.post-summary h3 a:hover) { text-decoration: underline; text-underline-offset: 4px; }
+  .writing-index :global(.post-summary p) { margin: 6px 0 10px; font-size: 14px; line-height: 1.65; }
+  .writing-index :global(.post-meta) { gap: 8px 18px; }
+  .writing-index :global(.post-meta ul) { color: var(--muted); }
+  .empty-state { display: block; padding: 28px 0; border-top: 1px solid var(--line); }
+  .filter-empty { padding: 32px 0; }
+  @media (max-width: 800px) { .archive-tools { flex-direction: row; flex-wrap: wrap; } }
+  @media (max-width: 560px) {
+    :global(.blog-index .shell) { width: calc(100% - 40px); }
+    :global(.blog-index .blog-header) { min-height: 108px; }
+    .writing-intro { padding: 30px 0 24px; }
+    .writing-intro h1 { font-size: 30px; }
+    .writing-intro p { font-size: 14px; }
+    .archive-tools { align-items: start; }
+    .writing-index :global(.post-card) { grid-template-columns: 1fr; gap: 7px; padding: 18px 0; }
+    .writing-index :global(.post-summary h3) { font-size: 19px; }
+  }
+</style>
 <script>
   const filters = document.querySelector<HTMLElement>('[data-filters]')
   if (filters) {
@@ -45,7 +78,7 @@ const years = [...new Set(posts.map(post => post.data.date.getUTCFullYear()))]
       buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.tag === tag)))
       document.querySelectorAll<HTMLElement>('[data-year]').forEach(year => { year.hidden = ![...year.querySelectorAll<HTMLElement>('[data-entry]')].some(entry => !entry.hidden) })
       const status = document.querySelector('#filter-status')!
-      status.textContent = `${count} ${count === 1 ? 'article' : 'articles'}${tag ? ` tagged “${tag}”` : ''}`
+      status.textContent = `${count} ${count === 1 ? 'post' : 'posts'}${tag ? ` tagged “${tag}”` : ''}`
       document.querySelector<HTMLElement>('[data-filter-empty]')!.hidden = count > 0
     }
     filters.hidden = false

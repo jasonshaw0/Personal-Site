@@ -11,8 +11,9 @@ interface Props {
   image?: string
   article?: { date: Date; updated?: Date; tags: string[] }
   noindex?: boolean
+  index?: boolean
 }
-const { title, description, image = '/blog-og.png', article, noindex = false } = Astro.props
+const { title, description, image = '/blog-og.png', article, noindex = false, index = false } = Astro.props
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site)
 const imageUrl = new URL(image, Astro.site)
 ---
@@ -52,7 +53,7 @@ const imageUrl = new URL(image, Astro.site)
       }).replace(/</g, '\\u003c')} />
     </>}
   </head>
-  <body>
+  <body class:list={{ 'blog-index': index }}>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="blog-header shell">
       <a class="blog-brand" href="/blog" aria-label="Jason Shaw · Writing">
