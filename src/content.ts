@@ -30,7 +30,7 @@ export const projects: Project[] = [
 export const disciplines = [
   { number: '01', name: 'Software development', note: 'Primary focus', description: 'Developer tools, web applications, and automation. I work across interfaces and backend APIs, with testing, debugging, and documentation throughout.', groups: [
     { label: 'Languages & frameworks', items: ['Python', 'C / C++', 'JavaScript / TypeScript', 'HTML / CSS', 'React / Next.js'] },
-    { label: 'Practice & tools', items: ['APIs & backend development', 'Automation & scripting', 'Testing & debugging', 'Git / GitHub · Linux', 'Technical documentation'] },
+    { label: 'Practice & tools', items: ['APIs & backend development', 'Automation & scripting', 'Testing & debugging', 'Git / GitHub · Linux', 'Technical documentation (LaTeX, Markdown)'] },
   ] },
   { number: '02', name: 'Electrical & embedded', note: 'From code to circuits', description: 'Microcontroller firmware, electronics, and motion control. Building prototypes and troubleshooting the connection between code, circuits, and moving parts.', groups: [
     { label: 'Platforms', items: ['Arduino', 'ESP32 / STM32', 'Embedded C / C++', 'Wi-Fi / Bluetooth'] },
