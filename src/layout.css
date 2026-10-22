@@ -357,6 +357,24 @@
     .skill-groups h3 { font-size: 8px; margin-bottom: 8px; }
     .skill-groups li { font-size: 10px; line-height: 1.5; }
   }
+  @media (min-width: 901px) {
+    /* Keep the header, page content, and pager on the same desktop edges. */
+    :root { --gutter: var(--desktop-inset); }
+    .page { max-width: none; }
+    .hero-main { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(32px, 3.5vw, 56px); }
+    .hero-intro p { max-width: 360px; }
+    .hero-art .system-study { width: min(100cqw, 115cqh, 500px); }
+    .expertise-layout { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(36px, 4.5vw, 64px); }
+    .expertise-sidebar { padding-right: 0; }
+    .expertise-sidebar > p { max-width: 330px; }
+    .contact-layout { width: 100%; max-width: 1100px; margin-inline: auto; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(36px, 4.5vw, 64px); }
+    .contact-intro > p { max-width: 360px; }
+  }
+  @media (min-width: 901px) and (min-height: 621px) {
+    .display-name { font-size: clamp(38px, 7vw, 96px); }
+    .education-note { margin-top: 40px; }
+    .skill-tabs { gap: 26px; margin-bottom: 24px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }

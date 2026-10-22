@@ -52,6 +52,11 @@ const years = [...new Set(posts.map(post => post.data.date.getUTCFullYear()))]
   .empty-state { display: block; padding: 28px 0; border-top: 1px solid var(--line); }
   .filter-empty { padding: 32px 0; }
   @media (max-width: 800px) { .archive-tools { flex-direction: row; flex-wrap: wrap; } }
+  @media (min-width: 901px) {
+    :global(.blog-index .shell) { width: min(880px, calc(100% - 2 * var(--desktop-inset))); }
+    .writing-index :global(.post-card) { grid-template-columns: 100px minmax(0, 1fr); gap: 22px; }
+    .writing-intro p { max-width: 48ch; }
+  }
   @media (max-width: 560px) {
     :global(.blog-index .shell) { width: calc(100% - 40px); }
     :global(.blog-index .blog-header) { min-height: 108px; }

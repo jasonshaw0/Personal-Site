@@ -55,6 +55,9 @@
 }
 
 @layer responsive {
+  @media (min-width: 901px) {
+    .project-carousel { --slide-size: 80%; }
+  }
   @media print { .project-slide { opacity: 1; } }
   @media (max-width: 1050px) {
     .project-carousel { --slide-size: 80%; }

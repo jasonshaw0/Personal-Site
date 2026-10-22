@@ -260,6 +260,12 @@ figcaption { color: var(--muted); font-size: 12px; text-align: center; margin-to
   .not-found > div { flex-direction: column; gap: 5px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; } }
+@media (min-width: 901px) {
+  .shell { width: calc(100% - 2 * var(--desktop-inset)); }
+  .article-header { max-width: 800px; }
+  .reading-layout.has-toc { grid-template-columns: 165px minmax(0, 720px); gap: 36px; max-width: 921px; padding-right: 0; }
+  .article-pagination { gap: 32px; }
+}
 @media print {
   body { background: white; color: black; }
   .blog-header, .blog-footer, .article-top, .table-of-contents, .article-pagination, .related, .article-end, .code-toolbar { display: none; }

@@ -9,4 +9,6 @@
   --accent: #bfd4cd;
   --mono: 'IBM Plex Mono', monospace;
   --display: 'Syne Variable', sans-serif;
+  --desktop-content-width: 1200px;
+  --desktop-inset: max(clamp(48px, 7vw, 112px), calc((100vw - var(--desktop-content-width)) / 2));
 }
