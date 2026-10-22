@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, CircleHelp, Github, Instagram, Lin
 import { AnimatePresence, motion, MotionConfig } from 'motion/react'
 import type { Variants } from 'motion/react'
 import { profile, disciplines } from './content'
-import { SystemSculpture } from './components/TechnicalArt'
+import { HeroComputer } from './components/HeroComputer'
 import { ProjectCarousel } from './components/ProjectCarousel'
 import { ContactForm } from './components/ContactForm'
 import { Wordmark } from './components/Wordmark'
@@ -169,7 +169,7 @@ export function App() {
         <Reveal className="hero-signature" delay={.1}><h1 id="profile-title" className="display-name"><Wordmark /></h1></Reveal>
         <div className="hero-main">
           <Reveal className="hero-intro"><span className="eyebrow">SOFTWARE & SYSTEMS</span><h2>Software first.<br /><span>The whole system<br className="desktop-break" /> in view.</span></h2><p>I like building things, usually software, sometimes hardware, and often something in between. My projects range from web applications and developer tools to automation and embedded systems, drawing on a broader interest in engineering and design.</p><div className="hero-actions"><a className="metal-button" href={profile.github} target="_blank" rel="noreferrer"><Github size={16} /> Explore GitHub <ArrowUpRight size={15} /></a><button className="quiet-link" onClick={() => navigate('contact')}>Get in touch <ArrowUpRight size={15} /></button></div></Reveal>
-          <Reveal className="hero-art" delay={.08}><SystemSculpture /></Reveal>
+          <Reveal className="hero-art" delay={.08}><HeroComputer active={active === 'profile'} /></Reveal>
         </div>
       </>)}
 
