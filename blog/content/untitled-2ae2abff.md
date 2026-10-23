@@ -3,9 +3,12 @@ title: Stop Routing on Difficulty. Route on Uplift.
 description: "Notes on routing between a cheap model and an expensive one: the
   signal you want isn't how hard a prompt is, it's how much the big model
   helps."
-slug: untitled-2ae2abff
+slug: route-on-uplift-not-difficulty
 date: 2026-10-23
-tags: []
+tags:
+  - AI
+  - Software
+  - ML
 featured: false
 toc: true
 status: published
